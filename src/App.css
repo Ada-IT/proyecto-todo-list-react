@@ -152,3 +152,10 @@ select {
 .boton-rojo{
   background-color: rgb(112, 110, 110);
 }
+
+.alert-error{
+  color: red;
+  font-size: 1.3rem;
+  text-align: center;
+  height: 5vh;
+}

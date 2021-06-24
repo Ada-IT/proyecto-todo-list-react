@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import {db} from '../firebase-config';
 import {makeStyles} from '@material-ui/core/styles';
 import {
@@ -11,15 +12,14 @@ import {
   Icon
 } from '@material-ui/core';
 
-const Form = ({setTodos, todos, inputText, setInputText, setStatus, status, traerDesdeFirebase}) => {
+const Form = ({setTodos, todos, inputText, setInputText, setStatus, status}) => {
 
   const useStyles = makeStyles((theme) => ({
     root: {
       flexGrow: 1
     },
     input: {
-      backgroundColor: 'white',
-      width: '95%'
+      backgroundColor: 'white'
     },
     formControl: {
       margin: theme.spacing(1),
@@ -32,45 +32,55 @@ const Form = ({setTodos, todos, inputText, setInputText, setStatus, status, trae
     },
     button: {
       margin: theme.spacing(1),
-      width:'95%'
+      width:'99%',
+      height: '6vh',
     }
   }));
 
   const classes = useStyles();
+  const [error, setError] = useState(false);
 
   const submitTodoHandler = e => {
+
+    if(inputText.trim().length === 0){
+      setError(true);
+      setTimeout(()=>{
+        setError(false);
+      },1000);
+      return;
+    }    
+
+    setError(false);
+
     e.preventDefault();
-    guardarEnFirebase({
-      text: inputText,
-      completed: false,
-      id: Math.random() * 10000
-    })
     setTodos([...todos, {
       text: inputText,
       completed: false,
       id: Math.random() * 10000
     }])
+    guardarEnFirebase({
+      text: inputText,
+      completed: false,
+      id: Math.random() * 10000
+    })
     setInputText('')
   }
 
-  const inputTextHandler = e => {
-    setInputText(e.target.value);
-  }
+  const inputTextHandler = e => setInputText(e.target.value);
 
-  const statusHandler = event => {
-    setStatus(event.target.value);
-  }
+  const statusHandler = event => setStatus(event.target.value);
 
-  const guardarEnFirebase = (tarea) => {
+  const guardarEnFirebase = tarea => {
+    // Add a new document with a generated id.
     db.collection("todos").add(tarea)
     .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
+      console.log("Document written with ID: ", docRef.id);
     })
     .catch((error) => {
-        console.error("Error adding document: ", error);
+      console.error("Error adding document: ", error);
     });
   }
-console.log('ajsdnlsnd')
+
   return (
     <div className={classes.root}>
       <Grid
@@ -79,11 +89,11 @@ console.log('ajsdnlsnd')
         direction="row"
         justify="center"
         alignItems="center">
-        <Grid item sm={4} xs={12}>
+        <Grid item sm={5} xs={12}>
           <div className={classes.root}  autoComplete="off">
             <TextField
               className={classes.input}
-              id="filled-full-width"
+              id="illed-full-width"
               label="Tarea"
               value={inputText}
               onChange={inputTextHandler}
@@ -101,21 +111,12 @@ console.log('ajsdnlsnd')
           </div>
         </Grid>
         <Grid item sm={1} xs={12}>
-          <Button
-            disabled={inputText.trim().length === 0}
-            onClick={submitTodoHandler}
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            endIcon={<Icon>send</Icon>}
-            >
-            Send
-          </Button>
         </Grid>
-        <Grid item sm={4} xs={12}>
+        <Grid item sm={5} xs={12}>
           <FormControl className={classes.formControl}>
             <InputLabel id="demo-simple-select-label">Seleccionar</InputLabel>
             <Select
+              name="todos"
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               onChange={statusHandler}
@@ -127,7 +128,19 @@ console.log('ajsdnlsnd')
             </Select>
           </FormControl>
         </Grid>
-
+        <Grid item sm={2} xs={12}>
+          <Button
+            // disabled={inputText.trim().length === 0}
+            onClick={submitTodoHandler}
+            variant="contained"
+            color="primary"
+            className={classes.button}
+            endIcon={<Icon>send</Icon>}
+            >
+            Send
+          </Button>
+          <p className="alert-error">{error && 'Todos los datos son obligatorios!!'}</p>
+        </Grid>
       </Grid>
     </div>
   );

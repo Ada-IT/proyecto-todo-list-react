@@ -1,6 +1,6 @@
 import Todo from './Todo';
 
-const TodoList = ({filteredTodos, setTodos, todos}) => {
+const TodoList = ({filteredTodos}) => {
   return (
     <div>
       <div className="todo-container">
@@ -8,8 +8,6 @@ const TodoList = ({filteredTodos, setTodos, todos}) => {
           {filteredTodos.map(todo => (
             <Todo
               todo={todo}
-              todos={todos}
-              setTodos={setTodos}
               key={todo.id}
             />
           ))}
@@ -20,5 +18,3 @@ const TodoList = ({filteredTodos, setTodos, todos}) => {
 };
 
 export default TodoList;
-
-

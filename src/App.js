@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
-import './App.css';
 import {db} from './firebase-config';
+import './App.css';
 
 import Form from './components/Form';
 import TodoList from './components/TodoList';
@@ -13,34 +13,20 @@ function App() {
   const [filteredTodos, setFilteredTodos] = useState([]);
 
   const traerDesdeFirebase = () => {
-    db.collection("todos").get().then((querySnapshot) => {
+    console.log('useEffect')
+    db.collection("todos").onSnapshot((querySnapshot) => {
       const docs = [];
       querySnapshot.forEach((doc) => {
-          // doc.data() is never undefined for query doc snapshots
-          docs.push({...doc.data(), id: doc.id});
+          docs.push({...doc.data(), id: doc.id})
         });
-        // console.log(docs);
         setTodos(docs)
     });
   }
 
-  useEffect(() => {
-    traerDesdeFirebase()
-  },[])
+  useEffect(traerDesdeFirebase, [])
 
-  // useEffect(() => {
-  //   // const getLocalTodos = () => {
-  //   //   if(localStorage.getItem('todos') == null){
-  //   //     localStorage.setItem('todos', JSON.stringify(todos))
-  //   //   } else {
-  //   //     const todoLocal = JSON.parse(localStorage.getItem('todos'))
-  //   //     // setTodos(todoLocal)
-  //   //   }
-  //   // }
-  //   // getLocalTodos();
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // },[])
-  
+ 
+
   useEffect(() => {
     const filteredHandler = () => {
       switch(status) {
@@ -54,12 +40,9 @@ function App() {
           setFilteredTodos(todos);
       }
     }
-    // const saveLocalTodos = () => {
-    //   localStorage.setItem('todos', JSON.stringify(todos))
-    // }
     filteredHandler();
-    // saveLocalTodos();
-  },[todos, status])  
+  },[todos, status])
+
 
   return (
     <div>
@@ -73,7 +56,6 @@ function App() {
         setInputText={setInputText}
         setStatus={setStatus}
         status={status}
-        traerDesdeFirebase={traerDesdeFirebase}
       />
       <TodoList 
         todos={todos}
