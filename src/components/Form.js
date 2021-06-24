@@ -19,7 +19,9 @@ const Form = ({setTodos, todos, inputText, setInputText, setStatus, status}) => 
       flexGrow: 1
     },
     input: {
-      backgroundColor: 'white'
+      backgroundColor: 'white',
+      width: '94%',
+
     },
     formControl: {
       margin: theme.spacing(1),
