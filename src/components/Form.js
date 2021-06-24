@@ -34,7 +34,7 @@ const Form = ({setTodos, todos, inputText, setInputText, setStatus, status}) => 
     },
     button: {
       margin: theme.spacing(1),
-      width:'99%',
+      width:'93%',
       height: '6vh',
     }
   }));
